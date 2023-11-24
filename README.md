@@ -1,3 +1,5 @@
+<img src="header.png">
+
 # rp_dLogger
 `rp_dLogger` is a Discord logging utility designed for RedM servers. Its purpose is to provide server administrators with a simple and efficient way to log various server events directly to Discord channels via webhooks. Whether you want to keep track of player activity, server resource events, or in-game chat messages, rp_dLogger facilitates real-time notifications in your Discord server, keeping your team informed and up-to-date.
 
