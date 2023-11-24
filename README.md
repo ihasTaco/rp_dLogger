@@ -16,7 +16,7 @@ The `config.lua` file is where you define settings for each type of event you wa
 * **onStart/onStop**: Toggle logging for resource start/stop events and customize messages.
 * **onMessage**: Enable chat message logging with customizable embed settings.
 * **onJoin/onLeave**: Configure join/leave notifications with optional player session time.
-* **onCharacterCreate/onCharacterSelected**: Log character creation and selection events with detailed player information.
+* **onCharacterCreate/onCharacterSelect/onCharacterDelete**: Log character creation, selection, and deletion events with detailed player information.
 
 ## Requirements
 * **Vorp_Core**
