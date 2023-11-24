@@ -19,7 +19,7 @@ The `config.lua` file is where you define settings for each type of event you wa
 ## Requirements
 * **Vorp_Core**
 * **Vorp_Character**
-* **rp_dWebhooks**
+* [**rp_dWebhooks**](https://github.com/ihasTaco/rp_dWebhook)
 
 ## Installation
 1. Place `rp_dLogger` in your server's resources directory.
