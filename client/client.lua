@@ -1,6 +1,5 @@
 RegisterNetEvent("vorp:initNewCharacter")
 AddEventHandler("vorp:initNewCharacter", function()
-    local characterName = GetPlayerName(PlayerId())
     TriggerServerEvent('onCharacterCreation', charid)
 end)
 

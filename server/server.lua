@@ -3,7 +3,6 @@ local config = load(configContent)()
 local playerConnectTimes = {}
 local VORPcore = {}
 
-
 TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
@@ -12,11 +11,12 @@ function getID(source)
     local playerID = source
     local identifiers = GetPlayerIdentifiers(playerID)
 
+    -- Was gonna use this if else statement to tell the webhook which ID to use but will remove this later as its not needed anymore
     for _, id in ipairs(identifiers) do
         if string.match(id, "steam:") then
-            return "Steam", id
+            return id
         elseif string.match(id, "license:") then
-            return "FiveM", id
+            return id
         end
     end
 end
@@ -32,39 +32,182 @@ function secondsToHoursMinutes(seconds)
     end
 end
 
-RegisterNetEvent('onCharacterCreation')
-AddEventHandler('onCharacterCreation', function()
-    if config.onCharacterCreation.enable == false then
+AddEventHandler('onResourceStart', function(resourceName)
+    if config.embed.onResourceStart.enable == false then
         return
     end
 
-    local webhook = config.systemWebhook
+    if (GetCurrentResourceName() ~= resourceName) then
+      return
+    end
 
-    if config.onCharacterCreation.useTimestamp == true then
+    if config.embed.onResourceStart.useTimestamp == true then
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
     else
         timestamp = false
     end
 
+    local webhook = config.webhooks.system
+
     local data = {
         embeds = {
             {
-                title = config.onCharacterCreate.title,
-                color = config.onCharacterCreate.embedColor,
+                title = config.embed.onResourceStart.title,
+                color = config.embed.onResourceStart.embedColor,
+                description = config.embed.onResourceStart.description,
+                footer = {
+                    text = config.embed.onResourceStart.footerText
+                },
+                timestamp = timestamp
+            }
+        }
+    }
+    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
+end)
+
+AddEventHandler('onResourceStop', function(resourceName)
+    if config.embed.onResourceStop.enable == false then
+        return
+    end
+    
+    if (GetCurrentResourceName() ~= resourceName) then
+      return
+    end
+
+    if config.embed.onResourceStop.useTimestamp == true then
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    else
+        timestamp = false
+    end
+
+    local webhook = config.webhooks.system
+
+    local data = {
+        embeds = {
+            {
+                title = config.embed.onResourceStop.title,
+                color = config.embed.onResourceStop.embedColor,
+                description = config.embed.onResourceStop.description,
+                footer = {
+                    text = config.embed.onResourceStop.footerText
+                },
+                timestamp = timestamp
+            }
+        }
+    }
+    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
+end)
+
+RegisterNetEvent('onCharacterCreation')
+AddEventHandler('onCharacterCreation', function()
+    if config.embed.onCharacterCreate.enable == false then
+        return
+    end
+
+    if config.embed.onCharacterCreate.useTimestamp == true then
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    else
+        timestamp = false
+    end
+
+    local webhook = config.webhooks.player
+    local id = getID(source)
+
+    local data = {
+        embeds = {
+            {
+                title = config.embed.onCharacterCreate.title,
+                color = config.embed.onCharacterCreate.embedColor,
                 fields = {
                     {
-                        name = config.onCharacterCreate.fields.player,
+                        name = config.embed.onCharacterCreate.fields.player,
                         value = "```" .. GetPlayerName(source) .. "```",
                         inline = true
                     },
                     {
-                        name = config.onCharacterCreate.fields.playerID,
+                        name = config.embed.onCharacterCreate.fields.playerID,
                         value = "```" .. id .. "```",
                         inline = true
                     },
                 },
                 footer = {
-                    text = config.onCharacterCreate.footerText
+                    text = config.embed.onCharacterCreate.footerText
+                },
+                timestamp = timestamp
+            }
+        }
+    }
+    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
+end)
+
+RegisterNetEvent('vorpcharacter:deleteCharacter')
+AddEventHandler('vorpcharacter:deleteCharacter', function(characterId)
+    if config.embed.onCharacterDelete.enable == false then
+        return
+    end
+
+    if config.embed.onCharacterDelete.useTimestamp == true then
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    else
+        timestamp = false
+    end
+
+    local webhook = config.webhooks.player
+    local User = VORPcore.getUser(source)
+    local id = getID(source)
+
+    local charFirstName = nil
+    local charLastName = nil
+
+    local userCharacters = User.getUserCharacters
+
+    -- Checking the users characters and figuring out which character was deleted using the charID
+    for _, userCharacter in ipairs(userCharacters) do
+        if userCharacter.charIdentifier == characterId then
+            charFirstName = userCharacter.firstname
+            charLastName = userCharacter.lastname
+            break
+        end
+    end
+
+    if not charFirstName and not charLastName then
+        print("Character not found for charIdentifier: " .. characterId)
+    end
+
+    local data = {
+        embeds = {
+            {
+                title = config.embed.onCharacterDelete.title,
+                color = config.embed.onCharacterDelete.embedColor,
+                fields = {
+                    {
+                        name = config.embed.onCharacterDelete.fields.player,
+                        value = "```" .. GetPlayerName(source) .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onCharacterDelete.fields.playerID,
+                        value = "```" .. id .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onCharacterDelete.fields.characterID,
+                        value = "```" .. characterId .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onCharacterDelete.fields.charFirstName,
+                        value = "```" .. charFirstName .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onCharacterDelete.fields.charLastName,
+                        value = "```" .. charLastName .. "```",
+                        inline = true
+                    },
+                },
+                footer = {
+                    text = config.embed.onCharacterDelete.footerText
                 },
                 timestamp = timestamp
             }
@@ -75,125 +218,55 @@ end)
 
 RegisterNetEvent('onCharacterSelected')
 AddEventHandler('onCharacterSelected', function()
-    if config.onCharacterSelected.enable == false then
+    if config.embed.onCharacterSelect.enable == false then
         return
     end
 
-    local webhook = config.systemWebhook
-
-    if config.onCharacterSelected.useTimestamp == true then
+    if config.embed.onCharacterSelect.useTimestamp == true then
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
     else
         timestamp = false
     end
 
+    local webhook = config.webhooks.player
     local User = VORPcore.getUser(source)
-    
     local Character = User.getUsedCharacter
-    local characterName = Character.firstname .. " " .. Character.lastname
-    
-    local idType, id = getID(source)
+    local id = getID(source)
 
     local data = {
         embeds = {
             {
-                title = config.onCharacterSelected.title,
-                color = config.onCharacterSelected.embedColor,
+                title = config.embed.onCharacterSelect.title,
+                color = config.embed.onCharacterSelect.embedColor,
                 fields = {
                     {
-                        name = config.onCharacterSelected.fields.player,
+                        name = config.embed.onCharacterSelect.fields.player,
                         value = "```" .. GetPlayerName(source) .. "```",
                         inline = true
                     },
                     {
-                        name = config.onCharacterSelected.fields.playerID,
+                        name = config.embed.onCharacterSelect.fields.playerID,
                         value = "```" .. id .. "```",
                         inline = true
                     },
                     {
-                        name = config.onCharacterSelected.fields.characterID,
+                        name = config.embed.onCharacterSelect.fields.characterID,
                         value = "```" .. Character.charIdentifier .. "```",
                         inline = true
                     },
                     {
-                        name = config.onCharacterSelected.fields.charFirstName,
+                        name = config.embed.onCharacterSelect.fields.charFirstName,
                         value = "```" .. Character.firstname .. "```",
                         inline = true
                     },
                     {
-                        name = config.onCharacterSelected.fields.charLastName,
+                        name = config.embed.onCharacterSelect.fields.charLastName,
                         value = "```" .. Character.lastname .. "```",
                         inline = true
                     },
                 },
                 footer = {
-                    text = config.onLeave.footerText
-                },
-                timestamp = timestamp
-            }
-        }
-    }
-    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
-end)
-
-AddEventHandler('onResourceStart', function(resourceName)
-    if config.onStart.enable == false then
-        return
-    end
-
-    if (GetCurrentResourceName() ~= resourceName) then
-      return
-    end
-
-    local webhook = config.systemWebhook
-
-    if config.onStart.useTimestamp == true then
-        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-    else
-        timestamp = false
-    end
-
-    local data = {
-        embeds = {
-            {
-                title = config.onStart.title,
-                color = config.onStart.embedColor,
-                description = config.onStart.description,
-                footer = {
-                    text = config.onStart.footerText
-                },
-                timestamp = timestamp
-            }
-        }
-    }
-    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
-end)
-
-AddEventHandler('onResourceStop', function(resourceName)
-    if config.onStop.enable == false then
-        return
-    end
-    
-    if (GetCurrentResourceName() ~= resourceName) then
-      return
-    end
-
-    local webhook = config.systemWebhook
-
-    if config.onStop.useTimestamp == true then
-        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-    else
-        timestamp = false
-    end
-
-    local data = {
-        embeds = {
-            {
-                title = config.onStop.title,
-                color = config.onStop.embedColor,
-                description = config.onStop.description,
-                footer = {
-                    text = config.onStop.footerText
+                    text = config.embed.onCharacterSelect.footerText
                 },
                 timestamp = timestamp
             }
@@ -204,45 +277,44 @@ end)
 
 RegisterNetEvent('chatMessage')
 AddEventHandler('chatMessage', function(source, author, text)
-    if config.onMessage.enable == false then
+    if config.embed.onMessage.enable == false then
         return
     end
-    
-    local webhook = config.chatWebhook
 
-    if config.onMessage.useTimestamp == true then
+    if config.embed.onMessage.useTimestamp == true then
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
     else
         timestamp = false
     end
 
-    local idType, id = getID(source)
+    local webhook = config.webhooks.chat
+    local id = getID(source)
 
     local data = {
         embeds = {
             {
-                title = config.onMessage.title,
-                description = config.onMessage.description,
-                color = config.onMessage.embedColor,
+                title = config.embed.onMessage.title,
+                description = config.embed.onMessage.description,
+                color = config.embed.onMessage.embedColor,
                 fields = {
                     {
-                        name = config.onMessage.fields.player,
+                        name = config.embed.onMessage.fields.player,
                         value = "```" .. GetPlayerName(source) .. "```",
                         inline = true
                     },
                     {
-                        name = config.onMessage.fields.playerID,
+                        name = config.embed.onMessage.fields.playerID,
                         value = "```" .. id .. "```",
                         inline = true
                     },
                     {
-                        name = config.onMessage.fields.message,
+                        name = config.embed.onMessage.fields.message,
                         value = "```" .. text .. "```",
                         inline = false
                     },
                 },
                 footer = {
-                    text = config.onLeave.footerText
+                    text = config.embed.onMessage.footerText
                 },
                 timestamp = timestamp
             }
@@ -253,19 +325,19 @@ end)
 
 RegisterNetEvent('playerJoining')
 AddEventHandler('playerJoining', function()
-    if config.onJoin.enable == false then
+    if config.embed.onPlayerJoin.enable == false then
         return
     end
-    
-    local webhook = config.leaveJoinWebhook
 
-    if config.onJoin.useTimestamp == true then
+    if config.embed.onPlayerJoin.useTimestamp == true then
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
     else
         timestamp = false
     end
 
-    local idType, id = getID(source)
+    local webhook = config.webhooks.player
+
+    local id = getID(source)
     local playerID = source
     local connectTime = os.time()
     playerConnectTimes[playerID] = connectTime
@@ -273,23 +345,23 @@ AddEventHandler('playerJoining', function()
     local data = {
         embeds = {
             {
-                title = config.onJoin.title,
+                title = config.embed.onPlayerJoin.title,
                 description = embedDescription,
-                color = config.onJoin.embedColor,
+                color = config.embed.onPlayerJoin.embedColor,
                 fields = {
                     {
-                        name = config.onJoin.fields.player,
+                        name = config.embed.onPlayerJoin.fields.player,
                         value = "```" .. GetPlayerName(source) .. "```",
                         inline = true
                     },
                     {
-                        name = config.onJoin.fields.playerID,
+                        name = config.embed.onPlayerJoin.fields.playerID,
                         value = "```" .. id .. "```",
                         inline = true
                     },
                 },
                 footer = {
-                    text = config.onJoin.footerText
+                    text = config.embed.onPlayerJoin.footerText
                 },
                 timestamp = timestamp
             }
@@ -301,19 +373,18 @@ end)
 
 RegisterNetEvent('playerDropped')
 AddEventHandler('playerDropped', function()
-    if config.onLeave.enable == false then
+    if config.embed.onPlayerLeave.enable == false then
         return
     end
-    
-    local webhook = config.leaveJoinWebhook
 
-    if config.onLeave.useTimestamp == true then
+    if config.embed.onPlayerLeave.useTimestamp == true then
         timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
     else
         timestamp = false
     end
 
-    local idType, id = getID(source)
+    local webhook = config.webhooks.player
+    local id = getID(source)
     local playerID = source
     local connectTime = playerConnectTimes[playerID]
     local playTime = "N/A"
@@ -328,28 +399,31 @@ AddEventHandler('playerDropped', function()
     local data = {
         embeds = {
             {
-                title = config.onLeave.title,
+                title = config.embed.onPlayerLeave.title,
                 description = embedDescription,
-                color = config.onLeave.embedColor,
+                color = config.embed.onPlayerLeave.embedColor,
                 fields = {
                     {
-                        name = config.onLeave.fields.player,
+                        name = config.embed.onPlayerLeave.fields.player,
                         value = "```" .. GetPlayerName(source) .. "```",
                         inline = true
                     },
                     {
-                        name = config.onLeave.fields.playerID,
+                        name = config.embed.onPlayerLeave.fields.playerID,
                         value = "```" .. id .. "```",
                         inline = true
                     },
+
+                    -- Eventually I want to calculate Player Play Time, but for some reason its not working
+                    -- Will look into this soon...
                     -- {
-                    --     name = config.onLeave.fields.playerPlayTime,
+                    --     name = config.embed.onPlayerLeave.fields.playerPlayTime,
                     --     value = tostring(playTime),
                     --     inline = false
                     -- },
                 },
                 footer = {
-                    text = config.onLeave.footerText
+                    text = config.embed.onPlayerLeave.footerText
                 },
                 timestamp = timestamp
             }
@@ -357,3 +431,12 @@ AddEventHandler('playerDropped', function()
     }
     TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
 end)
+
+-- TODO
+
+-- onPlayerGiveItem
+-- onPlayerGiveMoney
+-- onPlayerGiveGold
+-- onPlayerDeath
+
+-- Redem Framework

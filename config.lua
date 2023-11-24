@@ -1,93 +1,123 @@
-local config = {
-    -- Webhooks --
+local config = {}
 
-    -- These can be the same or different webhooks!
-    -- Webhook to send chat messages to 
-    chatWebhook = "Change Me",
-    -- Leave and Join messages will be sent to this webhook
-    leaveJoinWebhook = "Change Me",
+config.webhooks = {
+    -- chat messages will be sent here
+    chat   = "CHANGE ME",
+    -- player messages will be sent here
+    player = "CHANGE ME",
     -- System Messages will be sent here
-    systemWebhook = "Change Me",
+    system = "CHANGE ME",
+}
 
-    -- Translations & Embed Configurations --
+-- Translations & Embed Configurations --
+config.embed = {
+    -- When rp_dLogger, or the server starts
+    onResourceStart = {
+        enable              = true,
+        title               = "",
+        description         = "Connected to Royal Productions | RoyalRP | RedM",
+        embedColor          = 7824229,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
+    },
 
-    onStart = {                                                         -- This will send a message when the resource is loaded
-        enable = true,
-        title = "",
-        description = "Connected to Royal Productions | RoyalRP | RedM",
-        embedColor = 7824229,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = false,
+    -- When rp_dLogger, or the server shuts down
+    onResourceStop = {
+        enable              = true,
+        title               = "",
+        description         = "Disconnected from Royal Productions | RoyalRP | RedM",
+        embedColor          = 14502612,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
-    onStop = {                                                          -- This will send a message when the resource is unloaded
-        enable = true,
-        title = "",
-        description = "Disconnected from Royal Productions | RoyalRP | RedM",
-        embedColor = 14502612,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
-    },
-    onMessage = {                                                       -- This will send a message when a player sends a message in the chat (also captures commands)
-        enable = true,
-        title = "Chat Message",
-        description = "",
-        embedColor = 5592406,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+
+    -- When a player sends a message in the chat
+    onMessage = {
+        enable              = true,
+        title               = "Chat Message",
+        description         = "",
+        embedColor          = 5592406,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
         fields = {
-            player = "Player",
-            playerID = "Player ID",
-            message = "Message",
+            player          = "Player",
+            playerID        = "Player ID",
+            message         = "Message",
         },
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
-    onJoin = {                                                          -- This will send a message when a player joins the server
-        enable = true,
-        title = "Player Joined",
-        embedColor = 3066993,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+
+    -- When a player joins the server
+    onPlayerJoin = {
+        enable              = true,
+        title               = "Player Joined",
+        embedColor          = 3066993,                                           -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
         fields = {
-            player = "Player",
-            playerID = "Player ID",
+            player          = "Player",
+            playerID        = "Player ID",
         },
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
-    onLeave = {                                                         -- This will send a message when a player leaves the server
-        enable = true,
-        title = "Player Leave",
-        embedColor = 16711704,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+
+    -- When a player leaves the server
+    onPlayerLeave = {
+        enable              = true,
+        title               = "Player Leave",
+        embedColor          = 16711704,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
         fields = {
-            player = "Player",
-            playerID = "Player ID",
-            playerPlayTime = "Play Time",
+            player          = "Player",
+            playerID        = "Player ID",
+            playerPlayTime  = "Play Time",
         },
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
-    onCharacterCreate = {                                               -- This will send a message once a player creates a new character
-        enable = true,
-        title = "Character Created",
-        embedColor = 11922239,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+
+    -- When a player creates a new character
+    onCharacterCreate = {
+        enable              = true,
+        title               = "Character Created",
+        embedColor          = 11922239,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
         fields = {
-            player = "Player",
-            playerID = "Player ID",
+            player          = "Player",
+            playerID        = "Player ID",
         },
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
-    onCharacterSelected = {                                             -- This will send a message once a player selects a character (this will also be sent after a player makes a new character)
-        enable = true,
-        title = "Character Created",
-        embedColor = 15844367,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+
+    -- When a player selects a character to play (also after the player creates a new character)
+    onCharacterSelect = {
+        enable              = true,
+        title               = "Character Selected",
+        embedColor          = 15844367,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
         fields = {
-            player = "Player",
-            playerID = "Player ID",
-            characterID = "Character ID",
-            charFirstName = "First Name",
-            charFirstName = "Last Name",
+            player          = "Player",
+            playerID        = "Player ID",
+            characterID     = "Character ID",
+            charFirstName   = "First Name",
+            charLastName    = "Last Name",
         },
-        footerText = "Royal Productions | RoyalRP | RedM",
-        useTimestamp = true,
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
     },
+
+    -- When a player deletes a character to play
+    onCharacterDelete = {
+        enable              = true,
+        title               = "Character Deleted",
+        embedColor          = 9109504,                                          -- This has to be an integer (https://www.mathsisfun.com/hexadecimal-decimal-colors.html)
+        fields = {
+            player          = "Player",
+            playerID        = "Player ID",
+            characterID     = "Character ID",
+            charFirstName   = "First Name",
+            charLastName    = "Last Name",
+        },
+        footerText          = "Royal Productions | RoyalRP | RedM",
+        useTimestamp        = true,
+    },
+
 }
 
 return config
