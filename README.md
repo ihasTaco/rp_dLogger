@@ -16,8 +16,13 @@ The `config.lua` file is where you define settings for each type of event you wa
 * **onJoin/onLeave**: Configure join/leave notifications with optional player session time.
 * **onCharacterCreate/onCharacterSelected**: Log character creation and selection events with detailed player information.
 
+## Requirements
+* **Vorp_Core**
+* **Vorp_Character**
+* **rp_dWebhooks**
+
 ## Installation
 1. Place `rp_dLogger` in your server's resources directory.
 2. Configure `config.lua` with your desired settings and Discord webhook URLs.
-3. Add ``ensure rp_dLogger`` to your `server.cfg` file.
+3. Add ``ensure rp_dLogger`` to your `server.cfg` file underneath the requirements.
 4. Start your server, and the logger will begin sending events to Discord.
