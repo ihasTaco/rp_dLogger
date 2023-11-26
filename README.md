@@ -20,7 +20,7 @@ The `config.lua` file is where you define settings for each type of event you wa
 * **onPlayerDeath**: Log character death events, includes information like player/character info and killer player info when applicable.
 
 ## Requirements
-* **Vorp_Core**
+* **Vorp_Core** (Currently this is a requirement, eventually I want to support Vorp, Redem, and QBCore)
 * **Vorp_Character**
 * [**rp_dWebhooks**](https://github.com/ihasTaco/rp_dWebhook)
 
