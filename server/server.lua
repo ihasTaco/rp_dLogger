@@ -491,39 +491,39 @@ AddEventHandler('onPlayerDeath', function(killerID)
     if killerID ~= 0 and killerID ~= 60000 and killerID ~= 255 then
         local killerUser = VORPcore.getUser(killerID)
         local killerCharacter = killerUser.getUsedCharacter
+        local killerID = getID(killerID)
 
-        table.insert(data.embeds[1].fields, 
+        table.insert(data.embeds[1].fields, {
             -- TODO: Add Ability to see what they were killed with
-            {
-                name = config.embed.onPlayerDeath.fields.killedWith,
-                value = "```Hamburger```",
-                inline = false
-            },
-            {
-                name = config.embed.onPlayerDeath.fields.kplayer,
-                value = "```" .. GetPlayerName(killerID) .. "```",
-                inline = true
-            },
-            {
-                name = config.embed.onPlayerDeath.fields.kplayerID,
-                value = "```" .. killerID .. "```",
-                inline = true
-            },
-            {
-                name = config.embed.onPlayerDeath.fields.kcharacterID,
-                value = "```" .. killerCharacter.charIdentifier .. "```",
-                inline = true
-            },
-            {
-                name = config.embed.onPlayerDeath.fields.kcharFirstName,
-                value = "```" .. killerCharacter.firstname .. "```",
-                inline = true
-            },
-            {
-                name = config.embed.onPlayerDeath.fields.kcharLastName,
-                value = "```" .. killerCharacter.lastname .. "```",
-                inline = true
-            })
+            name = config.embed.onPlayerDeath.fields.killedWith,
+            value = "```Hamburger```",
+            inline = false
+        })
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.kplayer,
+            value = "```" .. GetPlayerName(killerID) .. "```",
+            inline = true
+        })
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.kplayerID,
+            value = "```" .. killerID .. "```",
+            inline = true
+        })
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.kcharacterID,
+            value = "```" .. killerCharacter.charIdentifier .. "```",
+            inline = true
+        })
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.kcharFirstName,
+            value = "```" .. killerCharacter.firstname .. "```",
+            inline = true
+        })
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.kcharLastName,
+            value = "```" .. killerCharacter.lastname .. "```",
+            inline = true
+        })
     elseif killerID == 0 then
         table.insert(data.embeds[1].fields, {
             name = config.embed.onPlayerDeath.fields.killedBy,

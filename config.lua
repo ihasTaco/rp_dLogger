@@ -59,7 +59,7 @@ config.translations = {
 config.embed = {
     -- When rp_dLogger, or the server starts
     onResourceStart = {
-        webhook             = config.webhooks.system                            -- (string)  The webhook to send the events message to.
+        webhook             = config.webhooks.system,                            -- (string)  The webhook to send the events message to.
         -- webhook             = config.webhooks.example                            -- You can change this to any of the webhooks in config.webhooks (example: system, chat, player, etc.)
         enable              = true,                                             -- (boolean) options: [ true | false ] - Enable / Disable the event
         useTimestamp        = true,                                             -- (boolean) options: [ true | false ] - Enable / Disable timestamp on embed
@@ -71,7 +71,7 @@ config.embed = {
     },
     -- When rp_dLogger, or the server is stopped
     onResourceStop = {
-        webhook             = config.webhooks.system
+        webhook             = config.webhooks.system,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 14502612,
@@ -81,7 +81,7 @@ config.embed = {
     },
     -- When a player sends a message in the chat
     onMessage = {
-        webhook             = config.webhooks.chat
+        webhook             = config.webhooks.chat,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 5592406,
@@ -96,7 +96,7 @@ config.embed = {
     },
     -- When a player joins the server
     onPlayerJoin = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 3066993,
@@ -110,7 +110,7 @@ config.embed = {
     },
     -- When a player leaves the server
     onPlayerLeave = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 16711704,
@@ -125,7 +125,7 @@ config.embed = {
     },
     -- When a player creates a new character
     onCharacterCreate = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 11922239,
@@ -139,7 +139,7 @@ config.embed = {
     },
     -- When a player selects a character to play (also after the player creates a new character)
     onCharacterSelect = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 15844367,
@@ -156,7 +156,7 @@ config.embed = {
     },
     -- When a player deletes a character
     onCharacterDelete = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 9109504,
@@ -173,7 +173,7 @@ config.embed = {
     },
     -- When a player dies
     onPlayerDeath = {
-        webhook             = config.webhooks.player
+        webhook             = config.webhooks.player,
         enable              = true,
         useTimestamp        = true,
         embedColor          = 15844367,
