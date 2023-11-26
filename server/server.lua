@@ -47,7 +47,7 @@ AddEventHandler('onResourceStart', function(resourceName)
         timestamp = false
     end
 
-    local webhook = config.webhooks.system
+    local webhook = config.embed.onResourceStart.webhook
 
     local data = {
         embeds = {
@@ -80,7 +80,7 @@ AddEventHandler('onResourceStop', function(resourceName)
         timestamp = false
     end
 
-    local webhook = config.webhooks.system
+    local webhook = config.embed.onResourceStop.webhook
 
     local data = {
         embeds = {
@@ -110,7 +110,7 @@ AddEventHandler('onCharacterCreation', function()
         timestamp = false
     end
 
-    local webhook = config.webhooks.player
+    local webhook = config.embed.onCharacterCreate.webhook
     local id = getID(source)
 
     local data = {
@@ -152,7 +152,7 @@ AddEventHandler('vorpcharacter:deleteCharacter', function(characterId)
         timestamp = false
     end
 
-    local webhook = config.webhooks.player
+    local webhook = config.embed.onCharacterDelete.webhook
     local User = VORPcore.getUser(source)
     local id = getID(source)
 
@@ -228,7 +228,7 @@ AddEventHandler('onCharacterSelected', function()
         timestamp = false
     end
 
-    local webhook = config.webhooks.player
+    local webhook = config.embed.onCharacterSelect.webhook
     local User = VORPcore.getUser(source)
     local Character = User.getUsedCharacter
     local id = getID(source)
@@ -287,7 +287,7 @@ AddEventHandler('chatMessage', function(source, author, text)
         timestamp = false
     end
 
-    local webhook = config.webhooks.chat
+    local webhook = config.embed.onMessage.webhook
     local id = getID(source)
 
     local data = {
@@ -335,8 +335,7 @@ AddEventHandler('playerJoining', function()
         timestamp = false
     end
 
-    local webhook = config.webhooks.player
-
+    local webhook = config.embed.onPlayerJoin.webhook
     local id = getID(source)
     local playerID = source
     local connectTime = os.time()
@@ -383,7 +382,7 @@ AddEventHandler('playerDropped', function()
         timestamp = false
     end
 
-    local webhook = config.webhooks.player
+    local webhook = config.embed.onPlayerLeave.webhook
     local id = getID(source)
     local playerID = source
     local connectTime = playerConnectTimes[playerID]
@@ -432,11 +431,121 @@ AddEventHandler('playerDropped', function()
     TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
 end)
 
+RegisterNetEvent('onPlayerDeath')
+AddEventHandler('onPlayerDeath', function(killerID)
+    if config.embed.onPlayerDeath.enable == false then
+        return
+    end
+
+    if config.embed.onPlayerDeath.useTimestamp == true then
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    else
+        timestamp = false
+    end
+
+    local webhook = config.embed.onPlayerDeath.webhook
+    local User = VORPcore.getUser(source)
+    local Character = User.getUsedCharacter
+    local id = getID(source)
+
+    local data = {
+        embeds = {
+            {
+                title = config.embed.onPlayerDeath.title,
+                color = config.embed.onPlayerDeath.embedColor,
+                fields = {
+                    {
+                        name = config.embed.onPlayerDeath.fields.vplayer,
+                        value = "```" .. GetPlayerName(source) .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onPlayerDeath.fields.vplayerID,
+                        value = "```" .. id .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onPlayerDeath.fields.vcharacterID,
+                        value = "```" .. Character.charIdentifier .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onPlayerDeath.fields.vcharFirstName,
+                        value = "```" .. Character.firstname .. "```",
+                        inline = true
+                    },
+                    {
+                        name = config.embed.onPlayerDeath.fields.vcharLastName,
+                        value = "```" .. Character.lastname .. "```",
+                        inline = true
+                    },
+                },
+                footer = {
+                    text = config.embed.onPlayerDeath.footerText
+                },
+                timestamp = timestamp
+            }
+        }
+    }
+
+    if killerID ~= 0 and killerID ~= 60000 and killerID ~= 255 then
+        local killerUser = VORPcore.getUser(killerID)
+        local killerCharacter = killerUser.getUsedCharacter
+
+        table.insert(data.embeds[1].fields, 
+            -- TODO: Add Ability to see what they were killed with
+            {
+                name = config.embed.onPlayerDeath.fields.killedWith,
+                value = "```Hamburger```",
+                inline = false
+            },
+            {
+                name = config.embed.onPlayerDeath.fields.kplayer,
+                value = "```" .. GetPlayerName(killerID) .. "```",
+                inline = true
+            },
+            {
+                name = config.embed.onPlayerDeath.fields.kplayerID,
+                value = "```" .. killerID .. "```",
+                inline = true
+            },
+            {
+                name = config.embed.onPlayerDeath.fields.kcharacterID,
+                value = "```" .. killerCharacter.charIdentifier .. "```",
+                inline = true
+            },
+            {
+                name = config.embed.onPlayerDeath.fields.kcharFirstName,
+                value = "```" .. killerCharacter.firstname .. "```",
+                inline = true
+            },
+            {
+                name = config.embed.onPlayerDeath.fields.kcharLastName,
+                value = "```" .. killerCharacter.lastname .. "```",
+                inline = true
+            })
+    elseif killerID == 0 then
+        table.insert(data.embeds[1].fields, {
+            name = config.embed.onPlayerDeath.fields.killedBy,
+            value = "```Console```",
+            inline = false
+        })
+    elseif killerID == 255 then
+        table.insert(data.embeds[1].fields, {
+                name = config.embed.onPlayerDeath.fields.killedBy,
+                value = "```Ped```",
+                inline = false
+            })
+    end
+
+
+    TriggerEvent('rp_dWebhook:SendDiscordMessage', data, webhook)
+end)
+
 -- TODO
 
 -- onPlayerGiveItem
 -- onPlayerGiveMoney
 -- onPlayerGiveGold
--- onPlayerDeath
 
 -- Redem Framework
